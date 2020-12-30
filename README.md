@@ -17,7 +17,7 @@ You can use it on different ROS robots in the same network. It will seperate the
 
 You can subscribe as example from `/<hostname>/raspicam/image/compressed` instead of `/raspicam_node/image/compressed`.
 
-If you use the original [raspicam_node](https://github.com/UbiquityRobotics/raspicam_node) which will not seperate robot by its hostname, the String variable `robot_host` could be empty and raspicam should change to raspicam_node again.
+If you use the original [raspicam_node](https://github.com/UbiquityRobotics/raspicam_node) which will not seperate robots by its hostname, the String variable `robot_host` could be empty and raspicam should change to raspicam_node again.
 
 
 ## Raspicam_FrameSaver Node
