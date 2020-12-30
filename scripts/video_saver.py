@@ -7,6 +7,7 @@ import socket
 import rospy
 import roslib
 from sensor_msgs.msg import CompressedImage
+from sensor_msgs.msg import CameraInfo
 from cv_bridge import CvBridge, CvBridgeError
 
 # numpy and scipy
@@ -20,7 +21,7 @@ VERBOSE = False
 
 #http://wiki.ros.org/rospy_tutorials/Tutorials/WritingImagePublisherSubscriber
 
-class CompressedImageSubscriber(object):
+class VideoSaver(object):
 
     def __init__(self, robot_host):
         """Configure subscriber."""
@@ -28,10 +29,14 @@ class CompressedImageSubscriber(object):
         # callback function.
         self.robot_host = robot_host
         self.sub = rospy.Subscriber(self.robot_host + '/raspicam/image/compressed', CompressedImage, self.callback, queue_size = 1)
+        self.infoSub = rospy.Subscriber(self.robot_host + '/raspicam/camera_info', CameraInfo, self.infoCallback, queue_size = 1)
 
         self.br = CvBridge()
         self.image = None
         self.data = None
+        self.infoData = None
+
+        self.name = "raspicam_node_%s.avi" % self.rospy.Time.now()
 
         # Initialize message variables.
         self.enable = False
@@ -44,11 +49,18 @@ class CompressedImageSubscriber(object):
     def start(self):
         self.enable = True
         self.sub = rospy.Subscriber(self.robot_host + '/raspicam/image/compressed', CompressedImage, self.callback, queue_size = 1)
+        self.infoSub = rospy.Subscriber(self.robot_host + '/raspicam/camera_info', CameraInfo, self.infoCallback, queue_size = 1)
 
     def stop(self):
         """Turn off subscriber."""
         self.enable = False
         self.sub.unregister()
+        self.infoData.unregister()
+        
+        self.result.release()
+        cv2.destroyAllWindows()
+
+        rospy.loginfo("The video was successfully saved") 
 
     def callback(self, data):
         """Handle subscriber data."""
@@ -67,13 +79,34 @@ class CompressedImageSubscriber(object):
         
         cv2.imshow('cv_img', image_np)
         cv2.waitKey(25)
+
+        # We need to set resolutions. 
+        frame_width = self.infoData.width
+        frame_height = self.infoData.height
+
+        size = (frame_width, frame_height)
+
+        # Below VideoWriter object will create 
+        # a frame of above defined The output  
+        # is stored in <filename>.avi file. 
+        self.result = cv2.VideoWriter(self.name, cv2.VideoWriter_fourcc(*'MJPG'), 10, size)
+
+        self.result.write(image_np)
+
+        if cv2.waitKey(1) & 0xFF == ord('s'): 
+            break
+
+    def infoCallback(self, data):
+        """Handle subscriber data."""
+        # Simply print out values in our custom message.
+        self.infoData = data
         
 if __name__ == '__main__':
     # Initialize the node and name it.
-    node_name = re.sub("-", "_", socket.gethostname()) + "_CompressedImageSubscriber"
+    node_name = re.sub("-", "_", socket.gethostname()) + "_Raspicam_VideoSaver"
     rospy.init_node(node_name, anonymous=False)
     
-    image = CompressedImageSubscriber("robotcar")
+    image = VideoSaver("robotcar")
     
     # Go to the main loop
     try:
