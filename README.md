@@ -5,7 +5,7 @@ Gives an example how you can use the [raspicam_node](https://github.com/Michdo93
 
 The String variable `robot_host` uses the hostname of one RobotCar. As example it could be `robotcar`.
 
-A raspicam_node video or its image frames could be used as for training a neuronal network which could be used as informations for an ADAS.
+A raspicam_node video or its image frames could be used for train a neuronal network which could used these informations for an ADAS.
 
 The [raspicam_node](https://github.com/Michdo93/raspicam_node/) is forked from here: https://github.com/UbiquityRobotics/raspicam_node
 
