@@ -1,4 +1,4 @@
-# robotcar_subscriber
+# raspicam_node_saver
 
 
 Gives an example how you can use the [raspicam_node](https://github.com/Michdo93/raspicam_node/) for saving the video broadcast as video or image frames. The [raspicam_node](https://github.com/Michdo93/raspicam_node/) are used from the [RobotCar](https://github.com/Michdo93/robotcar). At first you have to make sure that the roscore is running and the [robotcar-pkg](https://github.com/Michdo93/robotcar-pkg) is publishing the sensor informations.
