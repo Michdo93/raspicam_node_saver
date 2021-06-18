@@ -22,6 +22,8 @@ If you use the original [raspicam_node](https://github.com/UbiquityRobotics/rasp
 
 ## Raspicam_FrameSaver Node
 
+![FrameSaver](https://raw.githubusercontent.com/Michdo93/raspicam_node_saver/main/frame_saver.JPG)
+
 It subscribes the compressed image informations from the [raspicam_node](https://github.com/Michdo93/raspicam_node) respectively the raspicam and save its content as jpeg image frames.
 
 |                 Topic Address                |            Message Type       |
@@ -32,6 +34,8 @@ You can run it with `rosrun raspicam_node_saver frame_saver.py`
 
 
 ## Raspicam_VideoSaver Node
+
+![VideoSaver](https://raw.githubusercontent.com/Michdo93/raspicam_node_saver/main/video_saver.JPG)
 
 It subscribes the compressed image informations from the [raspicam_node](https://github.com/Michdo93/raspicam_node) respectively the raspicam and save its content as avi video.
 
