@@ -35,8 +35,12 @@ class VideoSaver(object):
         self.image = None
         self.data = None
         self.infoData = None
+        self.videoWriter = None
 
-        self.name = "raspicam_node_%s.avi" % self.rospy.Time.now()
+        self.time = rospy.Time.now()
+
+        self.i = 0
+        self.name = None
 
         # Initialize message variables.
         self.enable = False
@@ -55,10 +59,11 @@ class VideoSaver(object):
         """Turn off subscriber."""
         self.enable = False
         self.sub.unregister()
-        self.infoData.unregister()
+        self.infoSub.unregister()
         
-        self.result.release()
-        cv2.destroyAllWindows()
+        if self.videoWriter is not None:
+            self.videoWriter.release()
+            cv2.destroyAllWindows()
 
         rospy.loginfo("The video was successfully saved") 
 
@@ -86,15 +91,20 @@ class VideoSaver(object):
 
         size = (frame_width, frame_height)
 
+        self.i = self.i + 1
+        self.name = "raspicam_node_%s.avi" % self.time
+
+        msg = "Got frame %s" % (self.i)
+        rospy.loginfo(rospy.get_caller_id() + msg)
+
         # Below VideoWriter object will create 
         # a frame of above defined The output  
         # is stored in <filename>.avi file. 
-        self.result = cv2.VideoWriter(self.name, cv2.VideoWriter_fourcc(*'MJPG'), 10, size)
 
-        self.result.write(image_np)
-
-        if cv2.waitKey(1) & 0xFF == ord('s'): 
-            break
+        if self.videoWriter is None:
+            self.videoWriter = cv2.VideoWriter(self.name, cv2.VideoWriter_fourcc(*'MJPG'), 10, size)
+    
+        self.videoWriter.write(image_np)
 
     def infoCallback(self, data):
         """Handle subscriber data."""

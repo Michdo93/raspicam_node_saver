@@ -32,8 +32,10 @@ class FrameSaver(object):
         self.image = None
         self.data = None
 
+        self.time = rospy.Time.now()
+        
         self.i = 0
-        self.name = "raspicam_node_%s_%s.avi" % (self.rospy.Time.now(), self.i)
+        self.name = "raspicam_node_%s_%s.jpg" % (self.time, self.i)
 
         # Initialize message variables.
         self.enable = False
@@ -51,7 +53,6 @@ class FrameSaver(object):
         """Turn off subscriber."""
         self.enable = False
         self.sub.unregister()
-        self.infoData.unregister()
         cv2.destroyAllWindows()
 
     def callback(self, data):
@@ -72,6 +73,11 @@ class FrameSaver(object):
         cv2.waitKey(25)
 
         self.i = self.i + 1
+        self.name = "raspicam_node_%s_%s.jpg" % (self.time, self.i)
+
+        msg = "Got frame %s" % (self.i)
+        rospy.loginfo(rospy.get_caller_id() + msg)
+        
         cv2.imwrite(self.name, image_np)
         
 if __name__ == '__main__':
